@@ -1,4 +1,4 @@
-// sort 0,1,2 ....
+// 1. sort 0,1,2 ....
 
 void sortColors(vector<int>& nums) {
       int n=(int)nums.size();
@@ -18,13 +18,17 @@ void sortColors(vector<int>& nums) {
       }
   }
 
-// find missing and repeating :
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 2. find missing and repeating :
 
 // idea 1 : find the sum of first n element and sum of square of first n element and then subtract with array's sum and do some math.
 
 // idea 2 : do the xor of array's element and again do xor with (1...n) and divide x^y ..
 
-// merge sorted array : already know brute force and merge sort technique so here's optimized one :
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 3. merge sorted array : already know brute force and merge sort technique so here's optimized one :
 
 // so idea is to start with some gap and move 2 pointer mainting gap distance between each and do swaping
 // then gap/=2 same until gap become 0 or 1 
@@ -86,5 +90,93 @@ void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
   for(int i=m;i<m+n;i++){
       nums1[i] = nums2[i-m];
   }
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 4. Kadane : max subarray sum  
+// idea : if sum becomes < 0 then make it 0 cause it's not useful
+
+int maxSubArray(vector<int>& nums) {
+  int sum=0;
+  int ans = INT_MIN;
+  for(auto i : nums){
+      sum += i;
+      ans = max(ans , sum);
+      if(sum < 0)
+          sum = 0;
+  }
+  return ans;
+}
+
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 5. Merge Interval : very easy
+
+vector<vector<int>> merge(vector<vector<int>>& x) {
+  sort(x.begin(),x.end());
+  if(x.size()==0){
+      return {};
+  }
+  vector<vector<int>>ans;
+  ans.push_back({x[0][0],x[0][1]});
+  for(int i=1;i<x.size();i++){
+      if(ans[ans.size()-1][1]>=x[i][0]){
+          int d=ans[ans.size()-1][0];
+          int e=ans[ans.size()-1][1];
+          int mi=min(x[i][0],d);
+          int mx=max(x[i][1],e);
+          ans.pop_back();
+          ans.push_back({mi,mx});
+      }else{
+          ans.push_back({x[i][0],x[i][1]});
+      }
+  }
+  return ans;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 6. find the duplicate number 
+
+// idea 1 : modify array by doing negation
+int findDuplicate(vector<int>& nums) {
+  for(auto i : nums){
+      int index = abs(i);
+      if(nums[index] < 0){
+          return index;
+      }
+      nums[index] *= -1;
+  }
+  return 0;
+}
+
+// idea 2 : do some mapping :
+int store(vector<int>& nums , int pointer){
+  if( pointer == nums[pointer] )
+      return pointer;
+  int next = nums[pointer];
+  nums[pointer] = pointer;
+  return store(nums,next);
+}
+int findDuplicate(vector<int>& nums) {
+  return store(nums,0);
+}
+
+// idea 3 : cycle finding
+int findDuplicate(vector<int>& nums) {
+  int slow = nums[0],fast = nums[0];
+  do{
+      slow = nums[slow];
+      fast = nums[nums[fast]];
+  }while(slow != fast);
+
+  fast = nums[0];
+  while(slow != fast){
+      slow = nums[slow];
+      fast = nums[fast];
+  }
+  return slow;
 }
 
