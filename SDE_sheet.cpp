@@ -252,3 +252,31 @@ int search(vector<int>& nums, int target) {
   return -1;
 }
 
+// traping rain water
+int trappingWater(int arr[], int n){
+
+    // Your code here
+    int ans = 0;
+    int left = 0 ,right = n-1;
+    int sum = 0;
+    int leftMax = 0 , rightMax = 0;
+    while(left < right){
+        if(arr[left]<arr[right]){
+            if(leftMax <= arr[left]){
+                leftMax = arr[left];
+            }else{
+                ans += leftMax - arr[left];
+            }
+            left++;
+        }else{
+            if(rightMax <= arr[right]){
+                rightMax = arr[right];
+            }else{
+                ans += rightMax - arr[right];
+            }
+            right--;
+        }
+    }
+    return ans;
+    
+}
